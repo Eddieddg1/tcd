@@ -46,7 +46,7 @@ if [[ $sourced == "y" ]]; then
         cd $tarball
 
       else
-      echo "That is not a valid tar archive."
+      echo "That is not a valid archive."
       echo "Needs to be a valid tar archive."
 
       fi
@@ -71,7 +71,7 @@ if [[ $sourced == "y" ]]; then
         cd build
 
       else
-      echo "That is not a valid archive."
+      echo "That is not a valid tar archive."
       echo "Needs to be a valid tar archive."
 
       fi
@@ -116,6 +116,10 @@ if [[ $sourced == "y" ]]; then
 
         fi
 
+      elif [[ $path2 != "build" ]]; then
+        cd ..
+        rm -rf $path
+
       fi
 
       echo "Retreating and Deleting."
@@ -130,6 +134,11 @@ if [[ $sourced == "y" ]]; then
       path2=${path%/*}
       cd ../..
       rm -rf $path2
+
+    elif [[ $path2 != "build" ]]; then
+      cd .. 
+      rm -rf $path
+
     fi
 
     echo "Retreating and Deleting."
