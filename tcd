@@ -28,6 +28,11 @@ if [[ $sourced == "y" ]]; then
     cd build
     echo "Entered build dir."
 
+  elif [[ $option == "br" ]]; then
+    cd ..
+    rm -rf build
+    echo "Retreating and Deleting."
+
   elif [[ $option == "e" ]]; then
     tarball=$2
 
