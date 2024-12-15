@@ -41,7 +41,7 @@ if [[ $sourced == "y" ]]; then
         cd $tarball
 
       else
-      echo "That is not a valid archive."
+      echo "That is not a valid tar archive."
       echo "Needs to be a valid tar archive."
 
       fi
