@@ -1,0 +1,139 @@
+#!/bin/bash
+
+option=$1
+
+if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
+  tcdalias=$(alias tcd 2>/dev/null)
+
+  if [[ $tcdalias == "alias tcd='source tcd'" ]]; then
+    sourced=y
+
+  fi
+
+  if [[ -z $tcdalias ]]; then
+    alias tcd='source tcd'
+    echo "Alias setup."
+    sourced=n
+
+  fi
+
+elif [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  echo "For setup, please run this command: 'source tcd'"
+
+fi
+
+if [[ $sourced == "y" ]]; then
+  if [[ $option == "b" ]]; then
+    mkdir build
+    cd build
+    echo "Entered build dir."
+
+  elif [[ $option == "e" ]]; then
+    tarball=$2
+
+    if [[ $tarball != "" ]]; then
+      if [[ $tarball == *.tar.?z* ]]; then
+        tar xf $tarball
+        echo "Extracting and entering."
+
+        tarball=$(tar tf $tarball | head -n 1 | cut -f1 -d"/")
+
+        cd $tarball
+
+      else
+      echo "That is not a valid archive."
+      echo "Needs to be a valid tar archive."
+
+      fi
+
+    else
+      echo "There is no suffix.         Try h."
+
+    fi
+
+  elif [[ $option == "eb" ]]; then
+    tarball=$2
+
+    if [[ $tarball != "" ]]; then
+      if [[ $tarball == *.tar.?z* ]]; then
+        tar xf $tarball
+        echo "Extracting and entering."
+
+        tarball=$(tar tf $tarball | head -n 1 | cut -f1 -d"/")
+
+        cd $tarball
+        mkdir build
+        cd build
+
+      else
+      echo "That is not a valid archive."
+      echo "Needs to be a valid tar archive."
+
+      fi
+
+    else
+      echo "There is no suffix.         Try h."
+
+    fi
+
+  elif [[ $option == "h" ]]; then
+    echo "tcd (option) (suffix)"
+    echo "Options:"
+    echo "b = make and enter build folder"
+    echo "br = leave and remove build folder"
+    echo "e (suffix) = extract and enter"
+    echo "eb (suffix) = extract and enter build folder"
+    echo "h = help"
+    echo "r = cd .. and delete folder"
+    echo "fr = to bypass certanty checks when running 'tcd r'."
+    echo "     ONLY RUN WHEN IN A SOURCE FOLDER OR WHEN IN A"
+    echo "     BUILD FOLDER IN A SOURCE FOLDER!!! IT CAN REMOVE"
+    echo "     IMPORTANT FILES OR BREAK SYSTEM!!!"
+
+  elif [[ $option == "r" ]]; then
+    read -p "Are you sure? it WILL remove this folder. Y/n: " sure1
+
+    if [[ $sure1 == y || $sure1 == Y || $sure1 == "" ]]; then
+      path=$(pwd)
+      path2=${path##*/}
+
+      if [[ $path2 == "build" ]]; then
+        read -p "Are you sure? This WILL remove this folder AND the parent folder! y/N: " sure2
+
+        if [[ $sure2 == y || $sure2 == Y ]]; then
+          path2=${path%/*}
+          cd ../..
+          rm -rf $path2
+
+        elif [[ $sure2 == n || $sure2 == N || $sure2 == "" ]]; then
+          cd ..
+          rm -rf $path
+
+        fi
+
+      fi
+
+      echo "Retreating and Deleting."
+
+    fi
+
+  elif [[ $option == "fr" ]]; then
+    path=$(pwd)
+    path2=${path##*/}
+
+    if [[ $path2 == "build" ]]; then
+      path2=${path%/*}
+      cd ../..
+      rm -rf $path2
+    fi
+
+    echo "Retreating and Deleting."
+
+  elif [[ $option == "" ]]; then
+    echo "Please enter a valid option. Try h."
+
+  else
+    echo "That is not a valid option. Try h."
+
+  fi
+fi
